@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: events_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+
+  generator:
+    build: ./generator
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: events_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      EVENT_COUNT: 200
+    depends_on:
+      - postgres
+
+  viz:
+    build: ./viz
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: events_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      - generator
+    volumes:
+      - ./output:/output
+
+volumes:
+  postgres_data:
