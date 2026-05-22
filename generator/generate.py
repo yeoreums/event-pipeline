@@ -1,3 +1,4 @@
+import json
 import psycopg2
 import random
 import time
@@ -52,7 +53,7 @@ def insert_event(conn, event):
                 event["event_type"],
                 event["user_id"],
                 event["timestamp"],
-                str(event["metadata"]).replace("'", '"'),
+                json.dumps(event["metadata"]),
             ),
         )
     conn.commit()
