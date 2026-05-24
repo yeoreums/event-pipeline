@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: event-generator
+  template:
+    metadata:
+      labels:
+        app: event-generator
+    spec:
+      containers:
+        - name: event-generator
+          image: event-generator:latest
+          env:
+            - name: DB_HOST
+              value: "postgres"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: "events_db"
+            - name: DB_USER
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "postgres"
+            - name: EVENT_COUNT
+              value: "200"
