@@ -3,7 +3,7 @@ import psycopg2
 import random
 import time
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 DB_CONFIG = {
     "host": os.getenv("DB_HOST", "localhost"),
@@ -38,7 +38,7 @@ def generate_event():
     return {
         "event_type": event_type,
         "user_id": f"user_{random.randint(1, 20)}",
-        "timestamp": datetime.now(timezone.utc),
+        "timestamp": datetime.now(timezone.utc) - timedelta(minutes=random.randint(0, 180)),
         "metadata": METADATA[event_type](),
     }
 
