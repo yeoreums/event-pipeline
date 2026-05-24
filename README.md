@@ -23,6 +23,9 @@ event-pipeline/
 │   ├── Dockerfile
 │   ├── generate.py
 │   └── requirements.txt
+├── output/
+│   ├── event_type_count.png
+│   └── hourly_trend.png
 ├── sql/
 │   ├── init.sql
 │   └── queries.sql
@@ -115,6 +118,7 @@ CREATE TABLE events (
 - **JSONB 사용** — 이벤트 타입마다 부가 정보가 다르기 때문에 별도 테이블로 정규화하는 것보다 유연한 JSONB가 적합하다고 판단
 - **일회성 실행 컨테이너 방식** — 실시간 스트리밍보다 파이프라인 흐름 자체를 보여주는 것이 과제 목적에 맞다고 판단해 배치 방식으로 구현
 - **DB 연결 재시도 로직** — Docker Compose는 컨테이너를 병렬로 시작하기 때문에 PostgreSQL이 준비되기 전에 생성기가 실행될 수 있어 재시도 로직을 추가함
+- **타임스탬프 분산** — 실제 서비스처럼 시간대별 추이를 확인할 수 있도록 이벤트 발생 시간을 최근 3시간 내에서 랜덤하게 분산시켰습니다
 
 ## 추가로 개선하고 싶은 점
 
