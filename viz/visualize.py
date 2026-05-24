@@ -1,6 +1,7 @@
 import psycopg2
 import matplotlib.pyplot as plt
 import os
+import time
 
 DB_CONFIG = {
     "host": os.getenv("DB_HOST", "localhost"),
@@ -12,6 +13,18 @@ DB_CONFIG = {
 
 def get_connection():
     return psycopg2.connect(**DB_CONFIG)
+
+def wait_for_db():
+    for attempt in range(10):
+        try:
+            conn = psycopg2.connect(**DB_CONFIG)
+            conn.close()
+            print("DB connected")
+            return
+        except Exception as e:
+            print(f"Waiting for DB... attempt {attempt + 1}: {e}")
+            time.sleep(3)
+    raise Exception("Could not connect to DB after 10 attempts")
 
 def plot_event_type_count(conn):
     with conn.cursor() as cur:
@@ -60,6 +73,7 @@ def plot_hourly_trend(conn):
     print("Saved: hourly_trend.png")
 
 def main():
+    wait_for_db()
     conn = get_connection()
     plot_event_type_count(conn)
     plot_hourly_trend(conn)
